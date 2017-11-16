@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * 
+ * Mpesa Simple Class & Object - Object Oriented PHP to Generate OAuth Access Token through an Instance. Heavily commented 
+ * to make it simpler to understand it's good for sandbox token generation and testing. It does not utilize env variables.   
+ * @package Safaricom\Mpesa
+ * @author     Joe Njenga <joe@njengah.com>
+ *
+ */
+
+class mpesa{ 
+
+	/**
+     * Generate a sandbox token
+     */
+
+	
+// Function Get an OAuth Access Token 
+
+
+	public function getMpesaOAuthTk(){
+  
+  //Declare Properties -> Customer Key and Customer Secret 
+
+			$consumer_key = 'YOUR_CUSTOMER_KEY_HERE'; // Replace this value with your actual customer key 
+			$consumer_secret='YOUR_CUSTOMER_SECRET_HERE';//Replace this value with your actual customer secret 
+		
+		// Function to test if the properties are set i.e Customer Key & Customer Secret 
+		
+			if(empty($consumer_key) && empty($consumer_secret)){
+				die("Please set the Customer Key & Customer Secret from Your Safaricom Developer Account");
+			}
+		
+		//Starting the cURL Response - Setting Client URL
+		
+			$url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+		
+		
+		//Intializing the cURL Reponse 
+
+			$curl = curl_init();
+		
+		// Setting cURL settings 
+
+			curl_setopt($curl, CURLOPT_URL, $url);
+
+			$credentials = base64_encode($consumer_key.':'.$consumer_secret);
+
+			curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Basic '.$credentials)); //setting a custom header
+		
+			curl_setopt($curl, CURLOPT_HEADER, true);
+		
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+		// Executing cURL Reponse 
+    
+			$curl_response = curl_exec($curl);
+
+		// Function Return 
+		
+			return json_decode($curl_response);
+
+	}
+
+}
+
+// Instantiate Mpesa Class to create first object 
+
+  	$obj= new mpesa;
+	
+// Call the token generation method of the mpesa class in the new object -> $obj
+
+	  echo $obj->getMpesaOAuthTk(). " </br>" . " Token Successfully Generated";
+  
+?>
